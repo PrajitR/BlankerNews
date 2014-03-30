@@ -7,4 +7,16 @@ block content
     a(href="/register") Register
   else
     p You are logged in as #{user.username}
+    br
+    a(href="/submit") Submit
+    br
     a(href="/logout") Logout
+
+  ul
+    each story, index in stories
+      li
+        | #{index+1}.
+        if story.url
+          a(href="#{story.url}") #{story.title}
+        else
+          a(href="") #{story.title}

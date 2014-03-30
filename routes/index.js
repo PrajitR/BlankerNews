@@ -1,10 +1,14 @@
 var passport = require('passport');
 var Account = require('../models/account');
+var Story = require('../models/story');
 
 module.exports = function routes (app) {
 
   app.get('/', function (req, res) {
-    res.render('index', { user: req.user });
+    Story.find(function (err, stories) {
+      if (err) return console.error(err);
+      res.render('index', { user: req.user, stories: stories});
+    });
   });
 
   app.get('/register', function (req, res) {
@@ -38,4 +42,29 @@ module.exports = function routes (app) {
     res.redirect('/');
   });
 
+  app.get('/submit', function (req, res) {
+    if (!req.user) return res.redirect('/login');
+    res.render('submit');
+   });
+      
+  app.post('/submit', function (req, res) {
+      if (!req.user) return res.redirect('/login');
+
+      var url = req.body.url,
+          title = req.body.title,
+          text = req.body.text;
+      
+      // fail if title is not given or url and text not given
+      if (!title || (!url && !text)) return res.redirect('/submit');
+
+      var story;
+      if (url)
+        story = new Story({ url: url, title: title });
+      else
+        story = new Story({ text: text, title: title });
+      story.save(function (err, s) {
+        if (err) return console.error(err);
+        res.redirect('/');
+      });
+    });
 };
