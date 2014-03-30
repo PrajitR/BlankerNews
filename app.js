@@ -5,7 +5,7 @@
 
 var express = require('express');
 var routes = require('./routes');
-var user = require('./routes/user');
+var storyRoutes = require('./routes/stories');
 var http = require('http');
 var path = require('path');
 var mongoose = require('mongoose');
@@ -47,6 +47,7 @@ mongoose.connect('mongodb://localhost/users');
 
 // Routing
 routes(app);
+storyRoutes(app);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

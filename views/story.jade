@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  if story.url
+    a(href="#{story.url}") #{story.title}
+  else
+    h1 #{story.title}
+    br
+    p #{story.text}
+  p #{story.submitter}
