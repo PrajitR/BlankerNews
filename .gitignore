@@ -26,3 +26,6 @@ node_modules
 
 # Vim
 *.swp
+
+# Data
+data
