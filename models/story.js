@@ -6,7 +6,8 @@ var Story = new Schema({
   title: String,
   text: String,
   storyId: String,
-  submitter: String
+  submitter: String,
+  date: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model('Story', Story);

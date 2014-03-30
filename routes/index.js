@@ -58,18 +58,19 @@ module.exports = function indexRoutes (app) {
       
       // fail if title is not given or url and text not given
       if (!title || (!url && !text)) return res.redirect('/submit');
+      redirectIfDuplicate(url, res, function createStory () {
+        var story;
+        if (url)
+          story = new Story({ url: url, title: title, storyId: storyId,
+          submitter: req.user.username });
+        else
+          story = new Story({ text: text, title: title, storyId: storyId,
+          submitter: req.user.username });
 
-      var story;
-      if (url)
-        story = new Story({ url: url, title: title, storyId: storyId,
-        submitter: req.user.username });
-      else
-        story = new Story({ text: text, title: title, storyId: storyId,
-        submitter: req.user.username });
-
-      story.save(function (err, s) {
-        if (err) return console.error(err);
-        res.redirect('/');
+        story.save(function (err, s) {
+          if (err) return console.error(err);
+          res.redirect('/story/' + story.storyId);
+        });
       });
     });
 
@@ -79,5 +80,16 @@ module.exports = function indexRoutes (app) {
     md5.update(url + title + text + username + date);
     var digest = md5.digest('hex');
     return digest.slice(16);
+  }
+
+  function redirectIfDuplicate (url, res, cb) {
+    Story.find( { url: url }, function (err, stories) {
+      if (err) console.error(err);
+      if (stories.length > 0) {
+        res.redirect('/submit');
+      } else {
+        cb();
+      }
+    });
   }
 };
