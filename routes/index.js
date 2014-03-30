@@ -12,10 +12,10 @@ module.exports = function routes (app) {
   });
 
   app.post('/register', function (req, res) {
-    Account.register(new Account( { username: req.body.username }), 
+    Account.register(new Account({ username: req.body.username }), 
       req.body.password, function (err, account) {
         if (err) {
-          return res.render('register', { account: account });
+          return res.render('register', {info: "Sorry, that username is taken. Pick another."});
         }
 
         passport.authenticate('local')(req, res, function () {
@@ -28,7 +28,8 @@ module.exports = function routes (app) {
     res.render('login', { user: req.user });
   });
 
-  app.post('/login', passport.authenticate('local'), function (req, res) {
+  app.post('/login', passport.authenticate('local', { failureRedirect: '/login' }),
+   function (req, res) {
     res.redirect('/');
   });
 
