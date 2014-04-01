@@ -3,9 +3,17 @@ var mongoose = require('mongoose'),
     passpostLocalMongoose = require('passport-local-mongoose');
 
 var Account = new Schema({
-  name: String,
-  karma: Number
+  username: { type: String, unique: true },
+  karma: { type: Number, default: 0 }
 });
+
+Account.methods.incKarma = function () {
+  this.karma += 1;
+};
+
+Account.methods.decKarma = function () {
+  this.karma -= 1;
+};
 
 Account.plugin(passpostLocalMongoose);
 
