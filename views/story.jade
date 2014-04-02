@@ -8,3 +8,12 @@ block content
     br
     p #{story.text}
   p #{story.submitter}
+
+  form(action="#{submitComment}", method="post")
+    textarea(name="comment")
+    br
+    button(type="submit") Submit Comment
+
+  ul#comments
+    each comment in story.comments 
+      li #{comment}

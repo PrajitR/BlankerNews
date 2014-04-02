@@ -7,7 +7,8 @@ var Story = new Schema({
   text: String,
   storyId: String,
   submitter: String,
-  date: { type: Date, default: Date.now }
+  date: { type: Date, default: Date.now },
+  comments: [ String ]
 });
 
 module.exports = mongoose.model('Story', Story);

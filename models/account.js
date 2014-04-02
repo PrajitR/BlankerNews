@@ -4,7 +4,8 @@ var mongoose = require('mongoose'),
 
 var Account = new Schema({
   username: { type: String, unique: true },
-  karma: { type: Number, default: 0 }
+  karma: { type: Number, default: 0 },
+  comments: [String]
 });
 
 Account.methods.incKarma = function () {
