@@ -6,6 +6,7 @@ function createApp (db) {
   var express = require('express');
   var routes = require('./routes');
   var storyRoutes = require('./routes/stories');
+  var userRoutes = require('./routes/user');
   var http = require('http');
   var path = require('path');
   var mongoose = require('mongoose');
@@ -48,6 +49,7 @@ function createApp (db) {
   // Routing
   routes(app);
   storyRoutes(app);
+  userRoutes(app);
 
   var server = http.createServer(app);
   server.listen(app.get('port'), function(){

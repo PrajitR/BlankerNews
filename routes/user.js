@@ -1,8 +1,11 @@
+var Account = require('../models/account');
 
-/*
- * GET users listing.
- */
-
-exports.list = function(req, res){
-  res.send("respond with a resource");
+module.exports  = function userRoutes (app) {
+  app.get('/user/:username', function (req, res) {
+    var username = req.params.username;
+    Account.findOne({ username: username }, function (err, user) {
+      if (err) return res.redirect('/');
+      res.render('user', { username: username, comments: user.comments });
+    });
+  });
 };

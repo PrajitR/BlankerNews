@@ -5,7 +5,10 @@ var mongoose = require('mongoose'),
 var Account = new Schema({
   username: { type: String, unique: true },
   karma: { type: Number, default: 0 },
-  comments: [String]
+  comments: [
+  { comment: String,
+    url: String
+  }]
 });
 
 Account.methods.incKarma = function () {

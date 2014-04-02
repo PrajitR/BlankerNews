@@ -1,4 +1,5 @@
-var Story = require('../models/story');
+var Story = require('../models/story'),
+    Account = require('../models/account');
 
 module.exports = function storyRoutes (app) {
 
@@ -22,16 +23,28 @@ module.exports = function storyRoutes (app) {
     Story.findOne({ storyId: storyid }, function (error, story) {
       if (error) return res.redirect('/story/' + storyid);
 
-      story.comments.push(
-      { submitter: username, comment: comment,
+      story.comments.push({ 
+        submitter: username, comment: comment,
         id: commentId(comment, username, parentPath), parentPath: parentPath
       });
       story.save(function (error) {
-        console.error(error);
-        res.redirect('/story/' + storyid);
+        if (error) console.error(error);
+        addCommentToUser(username, comment, storyid, res);
       });
     });
   });
+
+  function addCommentToUser (username, comment, storyid, res) {
+    Account.findOne({ username: username }, function (error, user) {
+      user.comments.push({
+        comment: comment, url: '/story/' + storyid
+      });
+      user.save(function (error) {
+        if (error) console.error(error);
+        res.redirect('/story/' + storyid);
+      });
+    });
+  }
 
   function commentId (comment, username, parentPath) {
     var date = Date.now();
