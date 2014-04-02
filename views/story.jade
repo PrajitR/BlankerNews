@@ -16,4 +16,15 @@ block content
 
   ul#comments
     each comment in story.comments 
-      li #{comment}
+      li 
+        b By: #{comment.submitter}
+        br
+        p #{comment.comment}
+        br
+        p Parents: #{comment.parentPath}
+        br
+        form(action="#{submitComment}", method="post")
+          textarea(name="comment")
+          input(type="hidden", name="parentPath", value="#{comment.parentPath + '/' + comment.id}")
+          br
+          button(type="Submit") Reply

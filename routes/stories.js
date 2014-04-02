@@ -14,16 +14,31 @@ module.exports = function storyRoutes (app) {
     if (!req.user) return res.redirect('/login');
 
     var comment = req.body.comment,
-        storyid = req.params.storyid;
+        username = req.user.username,
+        storyid = req.params.storyid,
+        parentPath = req.body.parentPath || '';
     if (!comment) return res.redirect('/story/' + storyid);
     
     Story.findOne({ storyId: storyid }, function (error, story) {
       if (error) return res.redirect('/story/' + storyid);
-      story.comments.push(comment);
+
+      story.comments.push(
+      { submitter: username, comment: comment,
+        id: commentId(comment, username, parentPath), parentPath: parentPath
+      });
       story.save(function (error) {
         console.error(error);
         res.redirect('/story/' + storyid);
       });
     });
   });
+
+  function commentId (comment, username, parentPath) {
+    var date = Date.now();
+    var md5 = require('crypto').createHash('md5');
+    md5.update(comment + username + parentPath + date);
+    var digest = md5.digest('hex'),
+        digLen = 5;
+    return digest.slice(digest.length - digLen);
+  }
 };

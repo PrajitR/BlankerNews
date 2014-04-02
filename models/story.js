@@ -8,7 +8,12 @@ var Story = new Schema({
   storyId: String,
   submitter: String,
   date: { type: Date, default: Date.now },
-  comments: [ String ]
+  comments: [ { 
+    submitter: String, 
+    comment: String,
+    id: String,
+    parentPath: String
+  } ]
 });
 
 module.exports = mongoose.model('Story', Story);
