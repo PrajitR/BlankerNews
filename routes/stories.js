@@ -1,5 +1,6 @@
 var Story = require('../models/story'),
-    Account = require('../models/account');
+    Account = require('../models/account'),
+    stable = require('stable');
 
 module.exports = function storyRoutes (app) {
 
@@ -7,7 +8,11 @@ module.exports = function storyRoutes (app) {
     var storyid = req.params.storyid;
     Story.findOne({ storyId: storyid }, function (error, story) {
       if (error) return res.redirect('/');
-      res.render('story', { story: story, submitComment: '/story/' + storyid + '/comment' });
+
+      res.render('story', { 
+        story: story, 
+        submitComment: '/story/' + storyid + '/comment'
+      });
     });
   });
 
@@ -22,22 +27,36 @@ module.exports = function storyRoutes (app) {
     
     Story.findOne({ storyId: storyid }, function (error, story) {
       if (error) return res.redirect('/story/' + storyid);
-
-      story.comments.push({ 
+      
+      var index = findParentIndex(story.comments, parentPath);
+      console.log("Index: " + index);
+      story.comments.splice(index + 1, 0, { 
         submitter: username, comment: comment,
         id: commentId(comment, username, parentPath), parentPath: parentPath
       });
       story.save(function (error) {
         if (error) console.error(error);
-        addCommentToUser(username, comment, storyid, res);
+        addCommentToUser(username, comment, storyid, story.title, res);
       });
     });
   });
 
-  function addCommentToUser (username, comment, storyid, res) {
+  function findParentIndex (comments, parentPath) {
+    var pp = parentPath.split('/'),
+        parent = pp[pp.length - 1];
+
+    var i = 0;
+    for(; i < comments.length; i++) {
+      if (comments[i].id === parent)
+        break;
+    }
+    return i;
+  }
+
+  function addCommentToUser (username, comment, storyid, title, res) {
     Account.findOne({ username: username }, function (error, user) {
       user.comments.push({
-        comment: comment, url: '/story/' + storyid
+        comment: comment, url: '/story/' + storyid, title: title
       });
       user.save(function (error) {
         if (error) console.error(error);

@@ -7,7 +7,8 @@ var Account = new Schema({
   karma: { type: Number, default: 0 },
   comments: [
   { comment: String,
-    url: String
+    url: String,
+    title: String
   }]
 });
 

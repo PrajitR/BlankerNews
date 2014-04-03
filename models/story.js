@@ -12,7 +12,8 @@ var Story = new Schema({
     submitter: String, 
     comment: String,
     id: String,
-    parentPath: String
+    parentPath: String,
+    date: { type: Date, default: Date.now }
   } ]
 });
 
