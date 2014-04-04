@@ -17,7 +17,6 @@
     "passport-local-mongoose": "^0.3.0",
     "mocha": "^1.18.2",
     "should": "^3.2.0",
-    "supertest": "^0.10.0",
-    "stable": "^0.1.4"
+    "supertest": "^0.10.0"
   }
 }

@@ -1,6 +1,5 @@
 var Story = require('../models/story'),
-    Account = require('../models/account'),
-    stable = require('stable');
+    Account = require('../models/account');
 
 module.exports = function storyRoutes (app) {
 
@@ -29,7 +28,6 @@ module.exports = function storyRoutes (app) {
       if (error) return res.redirect('/story/' + storyid);
       
       var index = findParentIndex(story.comments, parentPath);
-      console.log("Index: " + index);
       story.comments.splice(index + 1, 0, { 
         submitter: username, comment: comment,
         id: commentId(comment, username, parentPath), parentPath: parentPath

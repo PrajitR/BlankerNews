@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var request = require('supertest');
 var Account = require('../models/account');
 var Story = require('../models/story');
-var app = require('../app')('test');
+var app = require('./app');
 
 describe('Routes', function () {
   var r;
