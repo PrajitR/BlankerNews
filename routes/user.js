@@ -5,7 +5,8 @@ module.exports  = function userRoutes (app) {
     var username = req.params.username;
     Account.findOne({ username: username }, function (err, user) {
       if (err) return res.redirect('/');
-      res.render('user', { username: username, comments: user.comments });
+      var comments = user.comments || [];
+      res.render('user', { username: username, comments: comments });
     });
   });
 };

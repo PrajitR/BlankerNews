@@ -15,8 +15,11 @@ block content
     }
   
   nav.navbar.navbar-default(role="navigation")
-    h4.navbar-text Blanker News
+    h4.navbar-text
+      a(href="/") Blanker News
     ul.nav.navbar-nav
+      li
+        a(href="/new") New
       unless user
         li
           a(href="/login") Login
@@ -27,8 +30,8 @@ block content
           a(href="/submit") Submit
         li
           a(href="/logout") Logout
-        a.nav.navbar-nav.navbar-right(href="/user/#{user.username}")
-          strong.text-right.navbar-text #{user.username}
+        li 
+          a(href="/user/#{user.username}") #{user.username}
 
   ul.list-group
     each story, index in stories
