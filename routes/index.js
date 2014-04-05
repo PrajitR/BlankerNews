@@ -8,9 +8,22 @@ module.exports = function indexRoutes (app) {
   app.get('/', function (req, res) {
     Story.find(function (err, stories) {
       if (err) return console.error(err);
-      res.render('index', { user: req.user, stories: stories});
+      stories.sort(function (a, b) {
+        return rank(b) - rank(a);
+      });
+      res.render('index', { user: req.user, stories: stories });
     });
   });
+
+  // taken from Evan Miller: www.evanmiller.org/how-not-to-sort-by-average-rating.html
+  function rank(story) {
+    var pos = story.upvote,
+        n = story.upvote + story.downvote;
+    if (n == 0) return 0;
+    var z = 1.96, // zscore of 95% confidence interval
+        phat = pos / n;
+    return (phat + z*z/(2*n) - z * Math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n);
+  }
 
   app.get('/register', function (req, res) {
     res.render('register');
