@@ -15,6 +15,7 @@ module.exports = function indexRoutes (app) {
           return rank(b) - rank(a);
         });
         prevStories = stories;
+        console.log(req.user);
         res.render('index', { user: req.user, stories: stories });
       });
     } else {

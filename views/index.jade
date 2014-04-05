@@ -6,26 +6,28 @@ block content
     function vote(node) {
       var ping = new Image();
       ping.src = node.href;
-      console.log(node.href);
       return false;
     }
+  
+  nav.navbar.navbar-default(role="navigation")
+    h4.navbar-text Blanker News
+    ul.nav.navbar-nav
+      unless user
+        li
+          a(href="/login") Login
+        li
+          a(href="/register") Register
+      else
+        li
+          a(href="/submit") Submit
+        li
+          a(href="/logout") Logout
+        a.nav.navbar-nav.navbar-right(href="/user/#{user.username}")
+          strong.text-right.navbar-text #{user.username}
 
-  unless user
-    a(href="/login") Login
-    br
-    a(href="/register") Register
-  else
-    p You are logged in as #{user.username}
-    br
-    a(href="/submit") Submit
-    br
-    a(href="/logout") Logout
-
-  ul
+  ul.list-group
     each story, index in stories
-      br
-      li
-        | #{index+1}.
+      li.list-group-item
         if story.url
           a(href="#{story.url}") #{story.title}
         else
