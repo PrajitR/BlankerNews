@@ -10,7 +10,8 @@ module.exports = function storyRoutes (app) {
 
       res.render('story', { 
         story: story, 
-        submitComment: '/story/' + storyid + '/comment'
+        submitComment: '/story/' + storyid + '/comment',
+        user: req.user
       });
     });
   });

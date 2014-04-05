@@ -40,11 +40,15 @@ block content
   p Submitted by: 
     a(href="/user/#{story.submitter}") #{story.submitter}
 
-  form.main-reply(action="#{submitComment}", method="post")
-    .form-group
-      label Reply
-      textarea.form-control(name="comment")
-    button.btn.btn-default(type="submit") Submit Comment
+  if user
+    form.main-reply(action="#{submitComment}", method="post")
+      .form-group
+        label Reply
+        textarea.form-control(name="comment")
+      button.btn.btn-default(type="submit") Submit Comment
+  else
+    a(href="/login")
+      strong Login to Reply
 
   ul.list-group.comments
     each comment in story.comments
@@ -68,4 +72,5 @@ block content
           p #{comment.comment}
 
 
-          button.btn.btn-default.reply-button(id="#{comment.parentPath + '/' + comment.id}-#{submitComment}") Reply
+          if user
+            button.btn.btn-default.reply-button(id="#{comment.parentPath + '/' + comment.id}-#{submitComment}") Reply
