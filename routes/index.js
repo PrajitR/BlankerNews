@@ -33,13 +33,17 @@ module.exports = function indexRoutes (app) {
   }
 
   // taken from Evan Miller: www.evanmiller.org/how-not-to-sort-by-average-rating.html
+  // you should play around with this function
   function rank (story) {
     var pos = story.upvote,
         n = story.upvote + story.downvote;
     if (n == 0) return 0;
     var z = 1.96, // zscore of 95% confidence interval
-        phat = pos / n;
-    return (phat + z*z/(2*n) - z * Math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n);
+        phat = pos / n,
+        wilsonRank = (phat + z*z/(2*n) - z * Math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n);
+    var exponent = 1.8, // taken from Hacker News ranking algorithm
+        oldPenalty = Math.exp(2 + ((Date.now() - story.date) / (1000 * 60 * 60)), exponent);
+    return wilsonRank / oldPenalty;
   }
 
   app.get('/new', function (req, res) {
