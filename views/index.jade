@@ -60,4 +60,9 @@ block content
             a.story-comments(href="/story/#{story.storyId}") Comments
             p Upvotes: #{story.upvote}
             p Downvotes: #{story.downvote}
-          
+  ul.pagination
+    if page > 1
+      li
+        a(href="/?page=#{page-1}") &laquo;
+    li
+      a(href="/?page=#{page+1}") &raquo;      

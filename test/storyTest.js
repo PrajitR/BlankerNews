@@ -134,7 +134,7 @@ describe('Stories', function () {
             .get(storyUrl + '/upvote')
             .end(function (err, res) {
               Story.findOne({ title: 'TheTitle' }, function (err, story) {
-                story.upvote.should.equal(0);
+                story.upvote.should.equal(1);
                 done();
               });
             });
@@ -145,7 +145,7 @@ describe('Stories', function () {
             .get(storyUrl + '/downvote')
             .end(function (err, res) {
               Story.findOne({ title: 'TheTitle' }, function (err, story) {
-                story.downvote.should.equal(0);
+                story.downvote.should.equal(1);
                 done();
               });
             });
@@ -231,7 +231,7 @@ describe('Stories', function () {
             .get(storyUrl + '/comment/' + commentid + '/upvote')
             .end(function (err, res) { 
               Story.findOne({ title: 'TheTitle' }, function (err, story) {
-                story.comments[0].upvote.should.equal(0);
+                story.comments[0].upvote.should.equal(1);
                 done();
               });
           });
@@ -242,7 +242,7 @@ describe('Stories', function () {
             .get(storyUrl + '/comment/' + commentid + '/downvote')
             .end(function (err, res) { 
               Story.findOne({ title: 'TheTitle' }, function (err, story) {
-                story.comments[0].downvote.should.equal(0);
+                story.comments[0].downvote.should.equal(1);
                 done();
               });
           });

@@ -5,9 +5,10 @@ var crypto = require('crypto');
 
 module.exports = function indexRoutes (app) {
 
-  var time, prevStories;
+  var time, prevStories, storiesPerPage = 30;
 
   app.get('/', function (req, res) {
+    var page = (req.query.page) ? Number(req.query.page) : 1;
     if (shouldResort()) {
       Story.find(function (err, stories) {
         if (err) return console.error(err);
@@ -15,11 +16,14 @@ module.exports = function indexRoutes (app) {
           return rank(b) - rank(a);
         });
         prevStories = stories;
-        console.log(req.user);
-        res.render('index', { user: req.user, stories: stories });
+        var s = prevStories.slice((page - 1) * storiesPerPage, page * storiesPerPage);
+        if (s.length == 0) return res.end('No more stories left');
+        res.render('index', { user: req.user, stories: s, page: page });
       });
     } else {
-      res.render('index', { user: req.user, stories: prevStories });
+      var s = prevStories.slice((page - 1) * storiesPerPage, page * storiesPerPage);
+      if (s.length == 0) return res.end('No more stories left');
+      res.render('index', { user: req.user, stories: s, page: page});
     }
   });
 
@@ -48,12 +52,15 @@ module.exports = function indexRoutes (app) {
   }
 
   app.get('/new', function (req, res) {
+    var page = (req.query.page) ? Number(req.query.page) : 1;
     Story.find(function (err, stories) {
       if (err) return console.error(err);
       stories.sort(function (a, b) {
         return b.date - a.date;
       });
-      res.render('index', { user: req.user, stories: stories });
+      var s = stories.slice((page - 1) * storiesPerPage, page * storiesPerPage);
+      if (s.length == 0) return res.end('No more stories left');
+      res.render('index', { user: req.user, stories: s, page: page });
     });
   });
 
