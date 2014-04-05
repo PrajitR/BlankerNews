@@ -5,18 +5,35 @@ var crypto = require('crypto');
 
 module.exports = function indexRoutes (app) {
 
+  var time, prevStories;
+
   app.get('/', function (req, res) {
-    Story.find(function (err, stories) {
-      if (err) return console.error(err);
-      stories.sort(function (a, b) {
-        return rank(b) - rank(a);
+    if (shouldResort()) {
+      Story.find(function (err, stories) {
+        if (err) return console.error(err);
+        stories.sort(function (a, b) {
+          return rank(b) - rank(a);
+        });
+        prevStories = stories;
+        res.render('index', { user: req.user, stories: stories });
       });
-      res.render('index', { user: req.user, stories: stories });
-    });
+    } else {
+      res.render('index', { user: req.user, stories: prevStories });
+    }
   });
 
+  function shouldResort () {
+    var waitTime = 1000 * 60; // one minute
+    if (!time || Date.now() - time > waitTime) {
+      time = Date.now();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   // taken from Evan Miller: www.evanmiller.org/how-not-to-sort-by-average-rating.html
-  function rank(story) {
+  function rank (story) {
     var pos = story.upvote,
         n = story.upvote + story.downvote;
     if (n == 0) return 0;
