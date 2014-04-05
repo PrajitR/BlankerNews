@@ -71,4 +71,56 @@ module.exports = function storyRoutes (app) {
         digLen = 5;
     return digest.slice(digest.length - digLen);
   }
+
+
+  app.get('/story/:storyid/:vote', function (req, res) {
+    if (!req.user) return res.end();
+
+    var storyid = req.params.storyid,
+        vote = req.params.vote,
+        user = req.user.username;
+
+    if (vote != 'downvote' && vote != 'upvote') return res.end();
+
+    Story.findOne({ storyId: storyid }, function (error, story) {
+      if (error) return res.end(error);
+      if (story.votedUsers.indexOf(user) >= 0) return res.end();
+
+      story[vote] += 1;
+      story.votedUsers.push(user);
+      story.save(function (error) {
+        res.end();
+      });
+    });
+  });
+
+
+  app.get('/story/:storyid/comment/:commentid/:vote', function (req, res) {
+    if (!req.user) return res.end();
+
+    var storyid = req.params.storyid,
+        vote = req.params.vote,
+        commentid = req.params.commentid,
+        user = req.user.username;
+
+    Story.findOne({ storyId: storyid }, function (error, story) {
+      if (error) return res.end();
+
+      var comment = null;
+      for (var i = 0; i < story.comments.length; i++) {
+        if (story.comments[i].id === commentid) {
+          comment = story.comments[i];
+          break;
+        }
+      }
+      if (!comment) return res.end();
+      if (comment.votedUsers.indexOf(user) >= 0) return res.end();
+      comment[vote] += 1;
+      comment.votedUsers.push(user);
+      story.save(function (error) {
+        res.end();
+      });
+    });
+  });
+
 };

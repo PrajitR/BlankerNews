@@ -1,6 +1,15 @@
 extends layout
 
 block content
+
+  script.
+    function vote(node) {
+      var ping = new Image();
+      ping.src = node.href;
+      console.log(node.href);
+      return false;
+    }
+
   unless user
     a(href="/login") Login
     br
@@ -14,6 +23,7 @@ block content
 
   ul
     each story, index in stories
+      br
       li
         | #{index+1}.
         if story.url
@@ -21,3 +31,10 @@ block content
         else
           a(href="") #{story.title}
         a(href="/story/#{story.storyId}") &nbsp;Comments
+        br
+        p Upvotes: #{story.upvote}
+        p Downvotes: #{story.downvote}
+        a(onclick="return vote(this)", href="/story/#{story.storyId}/upvote") Upvote Story
+        br
+        a(onclick="return vote(this)", href="/story/#{story.storyId}/downvote") Downvote Story
+

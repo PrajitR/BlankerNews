@@ -1,7 +1,15 @@
 extends layout
 
 block content
-  if story.url
+ script.
+    function vote(node) {
+      var ping = new Image();
+      ping.src = node.href;
+      console.log(node.href);
+      return false;
+    }
+
+ if story.url
     a(href="#{story.url}") #{story.title}
   else
     h1 #{story.title}
@@ -23,6 +31,13 @@ block content
         br
         p Parents: #{comment.parentPath}
         br
+        
+        p Upvotes: #{comment.upvote}
+        p Downvotes: #{comment.downvote}
+        a(onclick="return vote(this)", href="/story/#{story.storyId}/comment/#{comment.id}/upvote") Upvote Comment
+        br
+        a(onclick="return vote(this)", href="/story/#{story.storyId}/comment/#{comment.id}/downvote") Downvote Comment
+
         form(action="#{submitComment}", method="post")
           textarea(name="comment")
           input(type="hidden", name="parentPath", value="#{comment.parentPath + '/' + comment.id}")

@@ -8,12 +8,18 @@ var Story = new Schema({
   storyId: String,
   submitter: String,
   date: { type: Date, default: Date.now },
+  upvote: { type: Number, default: 0 },
+  downvote: { type: Number, default: 0 },
+  votedUsers: [ String ],
   comments: [ { 
     submitter: String, 
     comment: String,
     id: String,
     parentPath: String,
-    date: { type: Date, default: Date.now }
+    date: { type: Date, default: Date.now },
+    upvote: { type: Number, default: 0 },
+    downvote: { type: Number, default: 0 },
+    votedUsers: [ String ]
   } ]
 });
 
