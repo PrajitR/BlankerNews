@@ -4,6 +4,11 @@ block content
 
   script.
     function vote(node) {
+      // taken from HN
+      var id = node.id.split('-')[0];
+      document.getElementById(id + '-upvote').style.visibility = 'hidden';
+      document.getElementById(id + '-downvote').style.visibility = 'hidden';
+
       var ping = new Image();
       ping.src = node.href;
       return false;
@@ -28,15 +33,28 @@ block content
   ul.list-group
     each story, index in stories
       li.list-group-item
-        if story.url
-          a(href="#{story.url}") #{story.title}
-        else
-          a(href="") #{story.title}
-        a(href="/story/#{story.storyId}") &nbsp;Comments
-        br
-        p Upvotes: #{story.upvote}
-        p Downvotes: #{story.downvote}
-        a(onclick="return vote(this)", href="/story/#{story.storyId}/upvote") Upvote Story
-        br
-        a(onclick="return vote(this)", href="/story/#{story.storyId}/downvote") Downvote Story
-
+        .row
+          .votes.col-md-1
+            .row.upvote
+              a.pull-right(id="#{story.storyId}-upvote", onclick="return vote(this)", href="/story/#{story.storyId}/upvote") 
+                span.dropup
+                  span.caret
+            .row.downvote
+              a.pull-right(id="#{story.storyId}-downvote", onclick="return vote(this)", href="/story/#{story.storyId}/downvote")
+                span.caret
+          .title.col-md-11
+            if story.url
+              a(href="#{story.url}")
+                h3 #{story.title}
+            else
+              a(href="/story/#{story.storyId}") 
+                h3 #{story.title}
+        .row
+          .col-md-1
+          .story-metadata.col-md-11
+            p Submitted by:
+              a(href="/user/#{story.submitter}") #{story.submitter}
+            a.story-comments(href="/story/#{story.storyId}") Comments
+            p Upvotes: #{story.upvote}
+            p Downvotes: #{story.downvote}
+          
