@@ -2,44 +2,70 @@ extends layout
 
 block content
  script.
-    function vote(node) {
+    function vote (node) {
+      var id = node.id.split('-')[0];
+      document.getElementById(id + '-upvote').style.visibility = 'hidden';
+      document.getElementById(id + '-downvote').style.visibility = 'hidden';
+
       var ping = new Image();
       ping.src = node.href;
-      console.log(node.href);
       return false;
     }
 
+    $(document).ready(function () {
+      $('.reply-button').click(function () {
+        var split = this.id.split('-'),
+            parentPath = split[0],
+            submitComment = split[1];
+        var html = '<form action="' + submitComment + '" method="post">' +
+                   '<div class="form-group">' +
+                   '<textarea name="comment" class="form-group"></textarea>' +
+                   '<input type="hidden" name="parentPath" value="' + parentPath + '">' +
+                   '</div>' +
+                   '<button class="btn btn-default" type="submit">Reply</button>' +
+                   '</form>';
+        var selector = $(document.getElementById(this.id));
+        selector.after(html);
+        selector.remove();
+      });
+    });
+
  if story.url
-    a(href="#{story.url}") #{story.title}
+    h1
+      a(href="#{story.url}") #{story.title}
   else
     h1 #{story.title}
     br
     p #{story.text}
-  p #{story.submitter}
+  p Submitted by: 
+    a(href="/user/#{story.submitter}") #{story.submitter}
 
-  form(action="#{submitComment}", method="post")
-    textarea(name="comment")
-    br
-    button(type="submit") Submit Comment
+  form.main-reply(action="#{submitComment}", method="post")
+    .form-group
+      label Reply
+      textarea.form-control(name="comment")
+    button.btn.btn-default(type="submit") Submit Comment
 
-  ul#comments
+  ul.list-group.comments
     each comment in story.comments
-      li 
-        b By: #{comment.submitter}
-        br
-        p #{comment.comment}
-        br
-        p Parents: #{comment.parentPath}
-        br
-        
-        p Upvotes: #{comment.upvote}
-        p Downvotes: #{comment.downvote}
-        a(onclick="return vote(this)", href="/story/#{story.storyId}/comment/#{comment.id}/upvote") Upvote Comment
-        br
-        a(onclick="return vote(this)", href="/story/#{story.storyId}/comment/#{comment.id}/downvote") Downvote Comment
+      - var nestDepth = comment.parentPath.split('/').length - 1
+      div(class="depth depth-#{nestDepth}")
+        li.list-group-item
 
-        form(action="#{submitComment}", method="post")
-          textarea(name="comment")
-          input(type="hidden", name="parentPath", value="#{comment.parentPath + '/' + comment.id}")
-          br
-          button(type="Submit") Reply
+          .row.comment-metadata
+            .col-md-1.commenter
+              a.pull-right(href="/user/#{story.submitter}") #{story.submitter}
+
+            .col-md-11
+              .row.upvote
+                a(id="#{comment.id}-upvote", onclick="return vote(this)", href="/story/#{story.storyId}/comment/#{comment.id}/upvote") 
+                  span.dropup
+                    span.caret
+              .row.downvote
+                a(id="#{comment.id}-downvote", onclick="return vote(this)", href="/story/#{story.storyId}/comment/#{comment.id}/downvote")
+                  span.caret
+
+          p #{comment.comment}
+
+
+          button.btn.btn-default.reply-button(id="#{comment.parentPath + '/' + comment.id}-#{submitComment}") Reply
