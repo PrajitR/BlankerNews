@@ -42,6 +42,16 @@ module.exports = function indexRoutes (app) {
     return (phat + z*z/(2*n) - z * Math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n);
   }
 
+  app.get('/new', function (req, res) {
+    Story.find(function (err, stories) {
+      if (err) return console.error(err);
+      stories.sort(function (a, b) {
+        return b.date - a.date;
+      });
+      res.render('index', { user: req.user, stories: stories });
+    });
+  });
+
   app.get('/register', function (req, res) {
     res.render('register');
   });
