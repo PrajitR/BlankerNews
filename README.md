@@ -19,4 +19,4 @@ For tests, either of these work:
 
 ## Status
 
-There is more work to be done, but at the moment, I'm done with this.
+I'm planning in the near future to rewrite this with Backbone.js and refactor. Hopefully the code will be more reusable and modular after the rewrite. 
